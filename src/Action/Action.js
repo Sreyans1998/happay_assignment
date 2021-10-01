@@ -9,3 +9,15 @@ export const decNumber = () => {
         type: "DECREMENT"
     }
 }
+export const addItem = (id) => {
+    return{
+        type: "ADDITEM",
+        payLoad: id
+    }
+}
+export const removeItem = (id) => {
+    return {
+        type: "REMOVEITEM",
+        payLoad: parseInt(id)
+    }
+}

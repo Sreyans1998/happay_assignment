@@ -3,30 +3,33 @@ import React, { useState } from 'react'
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { useSelector, useDispatch } from "react-redux";
-import { incNumber, decNumber } from "../Action/Action";
+import { incNumber, decNumber, removeItem, addItem } from "../Action/Action";
 
 
 const HomeContent = (props) => {
-    const ItemQty = useSelector((state) => state.changeTheQuantity)
+    const { name } = useSelector((state) => state.changeTheQuantity.Items)
     const dispatch = useDispatch();
     const [incDecState, setIncDecState] = useState(false)
     const [addButton, setAddButton] = useState(true)
 
-    const clickHandle = (value, Qty) => {
+    const clickHandle = async (value, item, Qty) => {
         if(value === "changeIncDec"){
             if(Qty === 0){
                 setIncDecState(false);
                 setAddButton(true);
+                console.log(item);
+                dispatch(removeItem(item));
             }
             else{
-                dispatch(decNumber())
+                dispatch(decNumber(item))
             }
-            console.log("Increment wala button"+Qty)
+            console.log("Increment wala button")
         }
         else if(value === "changeAdd"){
             setAddButton(false);
             setIncDecState(true);
-            console.log("add wala button")
+            await dispatch(addItem(item))
+            console.log(name)
         }
         else{
             console.log("error");
@@ -49,17 +52,17 @@ const HomeContent = (props) => {
                         </div>
                     </div>
                 <div className={addButton ? "d-flex justify-content-center" : "d-none"} id="addCart">
-                    <Button variant="outlined" sx={{ width:"75%", fontWeight: 'bold' }} onClick={() => clickHandle("changeAdd")}>
+                    <Button variant="outlined" sx={{ width:"75%", fontWeight: 'bold' }} onClick={() => clickHandle("changeAdd", props.id)}>
                         Add to cart
                     </Button>
                 </div>
                 <div className={incDecState ? "d-flex justify-content-center" : "d-none"} id="addCart">
                     <ButtonGroup variant="contained" sx={{width: "50%"}} aria-label="outlined primary button group">
                         <Button startIcon={<RemoveIcon />} 
-                            onClick={() => clickHandle("changeIncDec", ItemQty)}></Button>
-                        <h5 className="d-flex justify-content-center text-primary my-auto w-50">{ItemQty}</h5>
+                            onClick={() => clickHandle("changeIncDec", props.id, 0)}></Button>
+                        <h5 className="d-flex justify-content-center text-primary my-auto w-50">0</h5>
                         <Button startIcon={<AddOutlinedIcon />} 
-                            onClick={() => dispatch(incNumber()) }></Button>
+                            onClick={() => dispatch(incNumber(props.id)) }></Button>
                     </ButtonGroup>
                 </div>
             </div>
